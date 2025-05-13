@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lavandowski - Backend e Dados</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.3/dist/mermaid.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;700&family=Inter:wght@300;400;600;800&display=swap');
+        
+        :root {
+            --bg-color: #0a0e17;
+            --card-bg: #141b2d;
+            --neon-blue: #00f0ff;
+            --neon-purple: #7b2ff7;
+            --dark-blue: #070b19;
+            --text-color: #e0e7ff;
+            --accent-color: #00ccff;
+            --grid-line: rgba(25, 118, 210, 0.12);
+            --glow-intensity: 8px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(17, 123, 215, 0.08) 0%, transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(123, 47, 247, 0.08) 0%, transparent 25%),
+                linear-gradient(var(--bg-color), var(--bg-color)),
+                repeating-linear-gradient(transparent, transparent 50px, var(--grid-line) 50px, var(--grid-line) 51px),
+                repeating-linear-gradient(90deg, transparent, transparent 50px, var(--grid-line) 50px, var(--grid-line) 51px);
+        }
+        
+        header {
+            padding: 1.5rem 0 0;
+            text-align: center;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.03em;
+            text-align: center;
+            position: relative;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: blur(var(--glow-intensity));
+            opacity: 0.5;
+            z-index: -1;
+        }
+        
+        .subtitle {
+            font-family: 'Roboto Mono', monospace;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.3em;
+            color: rgba(224, 231, 255, 0.7);
+            margin: 0.5rem 0 0.5rem;
+            padding-top: 0.5rem;
+        }
+        
+        .container {
+            width: 98%;
+            max-width: 1800px;
+            margin: 0 auto 1.5rem;
+            padding: 1.5rem;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(0, 204, 255, 0.1);
+            overflow: auto;
+            position: relative;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: calc(100vh - 180px);
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                rgba(0, 204, 255, 0), 
+                rgba(0, 204, 255, 0.5), 
+                rgba(123, 47, 247, 0.5), 
+                rgba(0, 204, 255, 0));
+        }
+        
+        .mermaid {
+            font-size: 16px;
+            font-family: 'Roboto Mono', monospace;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .controls button {
+            background: rgba(0, 204, 255, 0.1);
+            color: var(--accent-color);
+            border: 1px solid rgba(0, 204, 255, 0.3);
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .controls button:hover {
+            background: rgba(0, 204, 255, 0.2);
+            border-color: var(--accent-color);
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>LAVANDOWSKI <i class="fas fa-microchip"></i></h1>
+        <div class="subtitle">Backend e Dados do Projeto</div>
+    </header>
+    
+    <div class="container">
+        <div class="mermaid">
+            flowchart TB
+              %% Estilo e cores - Tech AI Theme
+              classDef source fill:#151e33,stroke:#1e88e5,stroke-width:2px,color:#e0e7ff
+              classDef filter fill:#0c2135,stroke:#00b8d4,stroke-width:2px,color:#e0e7ff
+              classDef enrichment fill:#131129,stroke:#6200ea,stroke-width:2px,color:#e0e7ff
+              classDef process fill:#10243e,stroke:#0288d1,stroke-width:2px,color:#e0e7ff
+              classDef analysis fill:#271216,stroke:#ff1744,stroke-width:2px,color:#e0e7ff
+              classDef pipeline fill:#071b12,stroke:#00c853,stroke-width:2px,color:#e0e7ff
+              classDef risk fill:#1e1a10,stroke:#ffc400,stroke-width:2px,color:#e0e7ff
+              classDef details fill:#22190e,stroke:#ff9100,stroke-width:2px,color:#e0e7ff
+              
+              %% Fontes de Dados
+              FonteDados["💾 FONTES DE DADOS"]
+              
+              AlertasTrad["📊 ALERTAS TRADICIONAIS<br>(maindb.offense_analyses)"]
+              AlertasTradList["- CH Alert (analista_id: 8423054)<br>- Pep_Pix Alert (analista_id: 8832903)<br>- GAFI Alert (analista_id: 15858378)<br>- Merchant_Pix Alert (analista_id: 16368511)<br>- International_Cards_Alert (analista_id: 18758930)<br>- Bank_Slips_Alert (analista_id: 19897830)<br>- Goverment_Corporate_Cards_Alert (analista_id: 20583019)<br>- Betting_Houses_Alert (analista_id: 20698248)<br>- GAFI Alert [US] (analista_id: 25071066)<br>+ 10 outros tipos de alertas"]
+              
+              AlertasIA["🤖 ALERTAS DE IA<br>(ai-services-sae.aml_model.predictions)"]
+              AlertasIAList["- user_id: ID do usuário<br>- timestamp: Data/hora da predição<br>- score: Score numérico de risco<br>- features: Features utilizadas para detecção<br>- label: 1 (positivo/suspeito)"]
+              
+              %% Filtragem
+              FiltragemExclusoes["🔍 FILTRAGEM E EXCLUSÕES"]
+              ExclusoesAuto["EXCLUSÕES AUTOMÁTICAS (fetch_data.py)<br>- Usuários analisados nos últimos 15 dias<br>- Casos com offense_id = 'money_laundering'<br>- Combinações específicas de conclusion/priority<br>- automatic_pipeline = true"]
+              
+              %% Enriquecimento
+              EnriquecimentoDados["🔄 ENRIQUECIMENTO DE DADOS"]
+              
+              PerfilMerchant["PERFIL MERCHANT<br>(merchant_report em functions.py)"]
+              MerchantData["MERCHANT_INFO / ISSUING_CONCENTRATION<br>TRANSACTION_CONCENTRATION / PIX_CONCENTRATION<br>DEVICES / CONTACTS / PRODUCTS / OFFENSE_HISTORY"]
+              
+              PerfilIndividual["PERFIL INDIVIDUAL<br>(individual_report em functions.py)"]
+              IndividualData["USER_INFO / FINANCIAL_PROFILE<br>TRANSACTION_HISTORY / SUSPICIOUS_PATTERNS"]
+              
+              DadosPEP["DADOS PEP<br>(fetch_pep_data em functions.py)"]
+              DadosPEPList["- Status PEP (Pessoa Exposta Politicamente)<br>- Cargo público<br>- Órgão/entidade<br>- Data de início e fim da exposição"]
+              
+              DadosJudiciais["DADOS JUDICIAIS<br>(fetch_lawsuit_data em functions.py)"]
+              DadosJudiciaisList["- Processos judiciais ativos<br>- Natureza dos processos<br>- Status atual<br>- Valores envolvidos"]
+              
+              DadosApostas["DADOS DE CASAS DE APOSTAS<br>(fetch_betting_houses em functions.py)"]
+              DadosApostasList["- Transações com casas de apostas<br>- Frequência e valores<br>- Padrões de apostas"]
+              
+              %% Processamento
+              ProcessamentoDados["⚙️ PROCESSAMENTO DE DADOS"]
+              FormatacaoDados["FORMATAÇÃO DOS DADOS (functions.py)<br>- Conversão de tipos de dados<br>- Formatação de datas (format_date_portuguese)<br>- Conversão de valores decimais (convert_decimals)<br>- Estruturação hierárquica de informações"]
+              GeracaoPrompt["GERAÇÃO DE PROMPT ESTRUTURADO (gpt_utils.py)<br>- Formatação dos dados para análise<br>- Estruturação segundo contexto regulatório<br>- Inclusão de informações históricas relevantes"]
+              
+              %% Pipeline de IA
+              PipelineIA["🧠 PIPELINE DE IA"]
+              
+              AnalisePrincipal["1. ANÁLISE PRINCIPAL COM GPT-4o (gpt_utils.py)"]
+              AnalisePrincipalDetalhes["FUNCTION: get_chatgpt_response()<br>PARAMETERS:<br>- model: gpt-4o-2024-11-20<br>- temperature: 0.0<br>- messages:<br>* system: SYSTEM_PROMPT<br>* user: dados estruturados do caso<br><br>ANÁLISE PRODUZIDA:<br>- Perfil do Cliente<br>- Movimentações Financeiras<br>- Histórico de Offenses<br>- Relacionamentos Econômicos<br>- Padrões e Comportamentos<br>- Processos judiciais<br>- Possível pontuação de risco (1-10)"]
+              
+              VerificacaoScore["2. VERIFICAÇÃO DE SCORE (gpt_utils.py)"]
+              VerificacaoScoreDetalhes["FUNCTION: get_analysis_and_decision()<br>- Verifica se 'Risco de Lavagem de Dinheiro:' está presente<br>- Se não estiver:<br>* Cria score_prompt solicitando classificação<br>* Envia para o3-mini-2025-01-31<br>* Adiciona score à análise original"]
+              
+              DecisaoFinal["3. DECISÃO FINAL COM O3-mini (gpt_utils.py)"]
+              DecisaoFinalDetalhes["FUNCTION: get_analysis_and_decision()<br>PARAMETERS:<br>- model: o3-mini-2025-01-31<br>- reasoning_effort: high<br>- messages:<br>* system: SYSTEM_PROMPT<br>* user: decision_prompt com análise completa do GPT-4o<br><br>RESULTADO:<br>- Decisão final em exatamente duas linhas<br>- Inclusão do score de risco<br>- Menção às principais alíneas da Carta Circular 4001<br>- Solicitação de documentos quando necessário"]
+              
+              ComposicaoResultado["4. COMPOSIÇÃO DO RESULTADO (gpt_utils.py)"]
+              ComposicaoResultadoDetalhes["- Junção da análise detalhada do GPT-4o<br>- Inclusão do score (original ou gerado pelo o3-mini)<br>- Adição da decisão concisa do o3-mini<br>- Resultado completo em formato de texto"]
+              
+              %% Resultados
+              ResultadosAnalise["📊 RESULTADOS DA ANÁLISE"]
+              
+              ClassificacaoRisco["CLASSIFICAÇÃO DE RISCO"]
+              ClassificacaoRiscoDetalhes["- Score 1-4: Baixo risco (normalização do caso)<br>- Score 5-6: Médio risco (normalização com monitoramento)<br>- Score 7-9: Alto risco (validação adicional - BV)<br>- Score 10: Risco extremo (descredenciamento e COAF)"]
+              
+              DecisaoAcionavel["DECISÃO ACIONÁVEL"]
+              DecisaoAcionavelDetalhes["- Normalização do caso<br>OU<br>- Solicitação de Business Validation (BV)<br>* Comprovantes de endereço<br>* Comprovantes de renda<br>* Documentação adicional"]
+              
+              FundamentacaoRegulatoria["FUNDAMENTAÇÃO REGULATÓRIA"]
+              FundamentacaoRegulatoriaDetalhes["- Alíneas específicas da Carta Circular 4001<br>- Justificativa para cada alínea identificada<br>- Correlação entre dados observados e suspeitas"]
+              
+              %% Descrição detalhada dos dados
+              subgraph DetalhamentoAlertas["DESCRIÇÃO DETALHADA DOS DADOS ANALISADOS"]
+                  direction TB
+                  
+                  AlertasSinalizacoes["1. ALERTAS E SINALIZAÇÕES"]
+                  AlertasSinalizacoesDesc["<b>Alertas Tradicionais - Padrões específicos:</b><br>- CH Alert: Transações de cash in/out em montantes suspeitos<br>- Pep_Pix Alert: Operações PIX envolvendo PEPs<br>- GAFI Alert: Transações com países na lista GAFI/FATF<br>- Merchant_Pix Alert: Padrões atípicos em PIX de comerciantes<br>- International_Cards_Alert: Uso de cartões em transações internacionais<br>- Bank_Slips_Alert: Emissão/pagamento de boletos suspeitos<br><br><b>Alertas de IA:</b><br>- Score de risco gerado por algoritmo de ML<br>- Transações atípicas não detectadas por regras tradicionais"]
+                  
+                  DadosPerfil["2. DADOS DE PERFIL E TRANSAÇÕES"]
+                  DadosPerfilDesc["<b>Dados de Merchant:</b><br>- Volume de transações (diário, semanal, mensal)<br>- Padrões de sazonalidade e horários<br>- Concentração de transações por cardholders<br>- Ratio de cash in vs. cash out<br><br><b>Dados de Pessoa Física:</b><br>- Perfil socioeconômico declarado<br>- Histórico de transações e contrapartes<br>- Renda vs. volume movimentado<br>- Padrões de consumo e transferências"]
+                  
+                  RelacionamentosConexoes["3. RELACIONAMENTOS E CONEXÕES"]
+                  RelacionamentosConexoesDesc["<b>Dispositivos e Acessos:</b><br>- IPs utilizados e geolocalização<br>- Padrões de acesso (horários, frequência)<br>- Dispositivos compartilhados com outros usuários<br><br><b>Contatos e Transações Recorrentes:</b><br>- Frequência de interações com contrapartes<br>- Volume financeiro por contraparte<br>- Perfil das contrapartes (PEP, alto risco, etc.)"]
+                  
+                  AvaliacaoRiscos["4. AVALIAÇÃO DE RISCOS PELO GPT-4o"]
+                  AvaliacaoRiscosDesc["O modelo analisa especificamente:<br>- <b>Compatibilidade:</b> Entre movimentação e perfil declarado<br>- <b>Fragmentação:</b> Padrões de divisão de transações<br>- <b>Operações Estruturadas:</b> Sequências que indicam ocultação<br>- <b>Contrapartes de Risco:</b> Relacionamentos com entidades/pessoas de risco<br>- <b>Horários Atípicos:</b> Operações em horários não usuais<br>- <b>Circularidade:</b> Movimentações que retornam à origem indiretamente"]
+                  
+                  DecisaoO3mini["5. DECISÃO FINAL PELO O3-mini"]
+                  DecisaoO3miniDesc["Com base na análise do GPT-4o, o modelo sintetiza:<br>- <b>Score Numérico:</b> Classificação na escala 1-10<br>- <b>Alíneas Aplicáveis:</b> Referências à Carta Circular 4001<br>- <b>Ação Recomendada:</b> Normalização ou solicitação de BV<br>- <b>Documentação Necessária:</b> Documentos a serem solicitados"]
+              end
+              
+              %% Conexões do fluxo principal
+              FonteDados --- AlertasTrad & AlertasIA
+              AlertasTrad --- AlertasTradList
+              AlertasIA --- AlertasIAList
+              
+              AlertasTradList & AlertasIAList --> FiltragemExclusoes
+              FiltragemExclusoes --- ExclusoesAuto
+              
+              ExclusoesAuto --> EnriquecimentoDados
+              
+              EnriquecimentoDados --- PerfilMerchant & PerfilIndividual & DadosPEP & DadosJudiciais & DadosApostas
+              PerfilMerchant --- MerchantData
+              PerfilIndividual --- IndividualData
+              DadosPEP --- DadosPEPList
+              DadosJudiciais --- DadosJudiciaisList
+              DadosApostas --- DadosApostasList
+              
+              MerchantData & IndividualData & DadosPEPList & DadosJudiciaisList & DadosApostasList --> ProcessamentoDados
+              
+              ProcessamentoDados --- FormatacaoDados & GeracaoPrompt
+              
+              FormatacaoDados & GeracaoPrompt --> PipelineIA
+              
+              PipelineIA --- AnalisePrincipal & VerificacaoScore & DecisaoFinal & ComposicaoResultado
+              AnalisePrincipal --- AnalisePrincipalDetalhes
+              VerificacaoScore --- VerificacaoScoreDetalhes
+              DecisaoFinal --- DecisaoFinalDetalhes
+              ComposicaoResultado --- ComposicaoResultadoDetalhes
+              
+              ComposicaoResultadoDetalhes --> ResultadosAnalise
+              
+              ResultadosAnalise --- ClassificacaoRisco & DecisaoAcionavel & FundamentacaoRegulatoria
+              ClassificacaoRisco --- ClassificacaoRiscoDetalhes
+              DecisaoAcionavel --- DecisaoAcionavelDetalhes
+              FundamentacaoRegulatoria --- FundamentacaoRegulatoriaDetalhes
+              
+              %% Conexões adicionais para o detalhamento
+              ResultadosAnalise -.-> DetalhamentoAlertas
+              
+              %% Estilo das caixas
+              class FonteDados,AlertasTrad,AlertasIA,AlertasTradList,AlertasIAList source
+              class FiltragemExclusoes,ExclusoesAuto filter
+              class EnriquecimentoDados,PerfilMerchant,MerchantData,PerfilIndividual,IndividualData,DadosPEP,DadosPEPList,DadosJudiciais,DadosJudiciaisList,DadosApostas,DadosApostasList enrichment
+              class ProcessamentoDados,FormatacaoDados,GeracaoPrompt process
+              class PipelineIA,AnalisePrincipal,AnalisePrincipalDetalhes,VerificacaoScore,VerificacaoScoreDetalhes,DecisaoFinal,DecisaoFinalDetalhes,ComposicaoResultado,ComposicaoResultadoDetalhes analysis
+              class ResultadosAnalise,ClassificacaoRisco,ClassificacaoRiscoDetalhes,DecisaoAcionavel,DecisaoAcionavelDetalhes,FundamentacaoRegulatoria,FundamentacaoRegulatoriaDetalhes pipeline
+              class DetalhamentoAlertas,AlertasSinalizacoes,AlertasSinalizacoesDesc,DadosPerfil,DadosPerfilDesc,RelacionamentosConexoes,RelacionamentosConexoesDesc,AvaliacaoRiscos,AvaliacaoRiscosDesc,DecisaoO3mini,DecisaoO3miniDesc details
+        </div>
+    </div>
+    
+    <div class="controls">
+        <button onclick="window.print()"><i class="fas fa-print"></i> Exportar PDF</button>
+        <button onclick="zoomIn()"><i class="fas fa-search-plus"></i> Ampliar</button>
+        <button onclick="zoomOut()"><i class="fas fa-search-minus"></i> Reduzir</button>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            securityLevel: 'loose',
+            theme: 'dark',
+            fontFamily: 'Roboto Mono, monospace',
+            flowchart: {
+                useMaxWidth: false,
+                htmlLabels: true,
+                curve: 'basis',
+                nodeSpacing: 40,
+                rankSpacing: 80,
+                diagramPadding: 30
+            }
+        });
+        
+        let scale = 1;
+        const mermaidDiv = document.querySelector('.mermaid');
+        
+        function zoomIn() {
+            scale += 0.1;
+            mermaidDiv.style.transform = `scale(${scale})`;
+            mermaidDiv.style.transformOrigin = 'center center';
+        }
+        
+        function zoomOut() {
+            if (scale > 0.5) {
+                scale -= 0.1;
+                mermaidDiv.style.transform = `scale(${scale})`;
+                mermaidDiv.style.transformOrigin = 'center center';
+            }
+        }
+    </script>
+</body>
+</html> 
