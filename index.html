@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lavandowski - Backend e Dados</title>
+    <title>Lavandowski - Sistema Integrado</title>
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.3/dist/mermaid.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -19,6 +20,7 @@
             --accent-color: #00ccff;
             --grid-line: rgba(25, 118, 210, 0.12);
             --glow-intensity: 8px;
+            --danger-color: #ff3a5e;
         }
         
         * {
@@ -136,6 +138,7 @@
             gap: 1rem;
             margin-top: 0.5rem;
             margin-bottom: 1rem;
+            flex-wrap: wrap;
         }
         
         .controls button {
@@ -155,6 +158,17 @@
             border-color: var(--accent-color);
         }
         
+        .controls button.danger {
+            background: rgba(255, 58, 94, 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(255, 58, 94, 0.3);
+        }
+        
+        .controls button.danger:hover {
+            background: rgba(255, 58, 94, 0.2);
+            border-color: var(--danger-color);
+        }
+        
         @media (max-width: 768px) {
             h1 {
                 font-size: 2.5rem;
@@ -162,13 +176,103 @@
             .container {
                 padding: 1rem;
             }
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: auto;
+            padding: 2rem;
+            border: 1px solid rgba(0, 204, 255, 0.2);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+        
+        .close {
+            position: absolute;
+            right: 1.5rem;
+            top: 1.5rem;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: var(--accent-color);
+        }
+        
+        .modal h2 {
+            color: var(--danger-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .modal p {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+        }
+        
+        .modal-buttons button {
+            padding: 0.7rem 1.5rem;
+            border-radius: 6px;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-buttons .cancel {
+            background: transparent;
+            color: var(--text-color);
+            border: 1px solid rgba(224, 231, 255, 0.3);
+        }
+        
+        .modal-buttons .confirm {
+            background: var(--danger-color);
+            color: white;
+            border: none;
+        }
+        
+        .modal-buttons .cancel:hover {
+            background: rgba(224, 231, 255, 0.1);
+        }
+        
+        .modal-buttons .confirm:hover {
+            background: #ff1a43;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>LAVANDOWSKI <i class="fas fa-microchip"></i></h1>
-        <div class="subtitle">Backend e Dados do Projeto</div>
+        <h1>LAVANDOWSKI <i class="fas fa-microchip"></i> <i class="fas fa-brain"></i></h1>
+        <div class="subtitle">Sistema Integrado de Dados e IA</div>
     </header>
     
     <div class="container">
@@ -183,137 +287,344 @@
               classDef pipeline fill:#071b12,stroke:#00c853,stroke-width:2px,color:#e0e7ff
               classDef risk fill:#1e1a10,stroke:#ffc400,stroke-width:2px,color:#e0e7ff
               classDef details fill:#22190e,stroke:#ff9100,stroke-width:2px,color:#e0e7ff
+              classDef regulatory fill:#251425,stroke:#e040fb,stroke-width:2px,color:#e0e7ff
+              classDef action fill:#2d1210,stroke:#ff3d00,stroke-width:2px,color:#e0e7ff
+              classDef identity fill:#151e33,stroke:#1e88e5,stroke-width:2px,color:#e0e7ff
+              classDef criteria fill:#1e1a10,stroke:#ffc400,stroke-width:2px,color:#e0e7ff
+              classDef decision fill:#071b12,stroke:#00c853,stroke-width:2px,color:#e0e7ff
+              classDef enforcement fill:#2d1210,stroke:#ff3d00,stroke-width:2px,color:#e0e7ff
               
-              %% Fontes de Dados
-              FonteDados["💾 FONTES DE DADOS"]
+              %% PARTE 1 - ENTRADA DE DADOS
+              EntradaDados["💾 FONTES DE DADOS"]
               
+              %% ALERTAS TRADICIONAIS
               AlertasTrad["📊 ALERTAS TRADICIONAIS<br>(maindb.offense_analyses)"]
               AlertasTradList["- CH Alert (analista_id: 8423054)<br>- Pep_Pix Alert (analista_id: 8832903)<br>- GAFI Alert (analista_id: 15858378)<br>- Merchant_Pix Alert (analista_id: 16368511)<br>- International_Cards_Alert (analista_id: 18758930)<br>- Bank_Slips_Alert (analista_id: 19897830)<br>- Goverment_Corporate_Cards_Alert (analista_id: 20583019)<br>- Betting_Houses_Alert (analista_id: 20698248)<br>- GAFI Alert [US] (analista_id: 25071066)<br>+ 10 outros tipos de alertas"]
               
+              AlertasCH["CH ALERT"]
+              AlertasCHDet["- Transações de cash in/out em montantes suspeitos<br>- Padrões estruturados de depósitos<br>- Saques em caixas eletrônicos<br>- Depósitos presenciais<br>- Operações de câmbio"]
+              
+              AlertasPIX["PEP_PIX & MERCHANT_PIX ALERTS"]
+              AlertasPIXDet["- Pep_Pix: Operações PIX envolvendo PEPs<br>- Merchant_Pix: Padrões atípicos em PIX de comerciantes<br>- Transações PIX fora do padrão<br>- Concentração de transferências<br>- Fragmentação de valores"]
+              
+              AlertasInternacionais["GAFI & INTERNATIONAL ALERTS"]
+              AlertasInternacionaisDet["- GAFI Alert: Transações com países na lista GAFI/FATF<br>- GAFI Alert [US]: Variante para operações com EUA<br>- International_Cards_Alert: Uso de cartões em transações internacionais<br>- Operações com jurisdições de alto risco"]
+              
+              AlertasOutros["OUTROS ALERTAS"]
+              AlertasOutrosDet["- Bank_Slips_Alert: Emissão/pagamento de boletos suspeitos<br>- Goverment_Corporate_Cards_Alert: Uso atípico de cartões gov/corp<br>- Betting_Houses_Alert: Transações com casas de apostas<br>+ 10 outros tipos de alertas específicos"]
+              
+              %% ALERTAS DE IA
               AlertasIA["🤖 ALERTAS DE IA<br>(ai-services-sae.aml_model.predictions)"]
               AlertasIAList["- user_id: ID do usuário<br>- timestamp: Data/hora da predição<br>- score: Score numérico de risco<br>- features: Features utilizadas para detecção<br>- label: 1 (positivo/suspeito)"]
               
-              %% Filtragem
+              %% FILTRAGEM
               FiltragemExclusoes["🔍 FILTRAGEM E EXCLUSÕES"]
-              ExclusoesAuto["EXCLUSÕES AUTOMÁTICAS (fetch_data.py)<br>- Usuários analisados nos últimos 15 dias<br>- Casos com offense_id = 'money_laundering'<br>- Combinações específicas de conclusion/priority<br>- automatic_pipeline = true"]
+              ExclusoesAuto["EXCLUSÕES AUTOMÁTICAS (fetch_data.py)"]
+              ExclusoesAutoDet["- Usuários analisados nos últimos 15 dias<br>- Casos com offense_id = 'money_laundering'<br>- Combinações específicas de conclusion/priority<br>- automatic_pipeline = true"]
               
-              %% Enriquecimento
+              %% ENRIQUECIMENTO
               EnriquecimentoDados["🔄 ENRIQUECIMENTO DE DADOS"]
               
+              %% PERFIL MERCHANT
               PerfilMerchant["PERFIL MERCHANT<br>(merchant_report em functions.py)"]
-              MerchantData["MERCHANT_INFO / ISSUING_CONCENTRATION<br>TRANSACTION_CONCENTRATION / PIX_CONCENTRATION<br>DEVICES / CONTACTS / PRODUCTS / OFFENSE_HISTORY"]
               
+              MerchantInfo["MERCHANT_INFO"]
+              MerchantInfoDet["Informações demográficas e cadastrais do comerciante:<br>- Dados de registro<br>- Setor de atuação<br>- Perfil declarado<br>- Histórico como cliente"]
+              
+              IssuingConcentration["ISSUING_CONCENTRATION"]
+              IssuingConcentrationDet["Análise de concentração por emissores:<br>- Concentração por bandeira<br>- Concentração por bancos emissores<br>- Padrões temporais de transações por emissor"]
+              
+              TransactionConcentration["TRANSACTION_CONCENTRATION"]
+              TransactionConcentrationDet["Concentração por tipos de transações:<br>- Valor médio por transação<br>- Padrões de valores<br>- Distribuição por tipo de transação<br>- Recorrência e padrões temporais"]
+              
+              PIXConcentration["PIX_CONCENTRATION"]
+              PIXConcentrationDet["Análise específica de operações PIX:<br>- Volume e frequência PIX<br>- Padrões temporais PIX<br>- Concentração por destinatários PIX<br>- Relação com outras transações"]
+              
+              %% Análise de Horários Atípicos
+              HorariosAtipicos["ANÁLISE DE HORÁRIOS ATÍPICOS<br>(merchant_report em functions.py)"]
+              HorariosAtipicosDetail["- Cash In PIX em horários atípicos: total_cash_in_pix_atypical_hours<br>- Cash Out PIX em horários atípicos: total_cash_out_pix_atypical_hours<br>- Percentual de operações noturnas<br>- Identificação de padrões temporais suspeitos"]
+              
+              %% Verificação de BINs Governamentais
+              BINsGovernamentais["PROCESSAMENTO DE BINS GOVERNAMENTAIS<br>(Goverment_Corporate_Cards_Alert)"]
+              BINsGovernamentaisDetail["- Verificação de BINs específicos: 409869, 467481, 498409<br>- Identificação de cartões corporativos governamentais<br>- Cálculo de percentual sobre TPV total<br>- Detecção de anomalias em padrões de uso"]
+              
+              Devices["DEVICES"]
+              DevicesDet["Análise de dispositivos utilizados:<br>- IPs e geolocalização<br>- Dispositivos registrados<br>- Padrões de acesso<br>- Anomalias de localização"]
+              
+              Contacts["CONTACTS"]
+              ContactsDet["Análise de contrapartes:<br>- Contrapartes frequentes<br>- Volume por contraparte<br>- Perfil das contrapartes<br>- Padrões de interação"]
+              
+              Products["PRODUCTS"]
+              ProductsDet["Produtos financeiros utilizados:<br>- Tipos de produtos<br>- Frequência de uso<br>- Padrões de utilização"]
+              
+              OffenseHistory["OFFENSE_HISTORY"]
+              OffenseHistoryDet["Histórico de ofensas anteriores:<br>- Alertas prévios<br>- Resoluções anteriores<br>- Padrões recorrentes<br>- Resultados de investigações passadas"]
+              
+              %% PERFIL INDIVIDUAL
               PerfilIndividual["PERFIL INDIVIDUAL<br>(individual_report em functions.py)"]
-              IndividualData["USER_INFO / FINANCIAL_PROFILE<br>TRANSACTION_HISTORY / SUSPICIOUS_PATTERNS"]
+              
+              UserInfo["USER_INFO"]
+              UserInfoDet["Dados cadastrais e informações básicas:<br>- Dados pessoais<br>- Histórico como cliente<br>- Status da conta<br>- Perfil declarado"]
+              
+              %% Verificação de Estrangeiros
+              VerificacaoEstrangeiros["VERIFICAÇÃO DE ESTRANGEIROS<br>(ch_alert [BR])"]
+              VerificacaoEstrangeirosDetail["- Análise de nomes que não soam brasileiros<br>- Verificação de CPFs com data de criação recente<br>- Correlação com padrões transacionais internacionais<br>- Identificação de possíveis laranjas ou terceiros"]
+              
+              FinancialProfile["FINANCIAL_PROFILE"]
+              FinancialProfileDet["Perfil financeiro do usuário:<br>- Movimentação média<br>- Fontes de recursos<br>- Destino dos recursos<br>- Compatibilidade com perfil declarado"]
+              
+              TransactionHistory["TRANSACTION_HISTORY"]
+              TransactionHistoryDet["Histórico detalhado de transações:<br>- Padrões temporais<br>- Tipos de operações<br>- Valores e frequências<br>- Contrapartes recorrentes"]
+              
+              SuspiciousPatterns["SUSPICIOUS_PATTERNS"]
+              SuspiciousPatternsDet["Padrões específicos de suspeita:<br>- Fragmentação de valores<br>- Operações estruturadas<br>- Triangulações<br>- Transações atípicas ao perfil"]
+              
+              %% DADOS COMPLEMENTARES
+              DadosComplementares["DADOS COMPLEMENTARES"]
               
               DadosPEP["DADOS PEP<br>(fetch_pep_data em functions.py)"]
-              DadosPEPList["- Status PEP (Pessoa Exposta Politicamente)<br>- Cargo público<br>- Órgão/entidade<br>- Data de início e fim da exposição"]
+              DadosPEPDet["- Status PEP (Pessoa Exposta Politicamente)<br>- Cargo público<br>- Órgão/entidade<br>- Data de início e fim da exposição"]
               
               DadosJudiciais["DADOS JUDICIAIS<br>(fetch_lawsuit_data em functions.py)"]
-              DadosJudiciaisList["- Processos judiciais ativos<br>- Natureza dos processos<br>- Status atual<br>- Valores envolvidos"]
+              DadosJudiciaisDet["- Processos judiciais ativos<br>- Natureza dos processos<br>- Status atual<br>- Valores envolvidos"]
               
               DadosApostas["DADOS DE CASAS DE APOSTAS<br>(fetch_betting_houses em functions.py)"]
-              DadosApostasList["- Transações com casas de apostas<br>- Frequência e valores<br>- Padrões de apostas"]
+              DadosApostasDet["- Transações com casas de apostas<br>- Frequência e valores<br>- Padrões de apostas"]
               
-              %% Processamento
+              SancoesHistorico["HISTÓRICO DE SANÇÕES<br>(fetch_sanctions_history em functions.py)"]
+              SancoesHistoricoDet["- Sanções anteriores aplicadas<br>- Entidades aplicadoras<br>- Período e duração<br>- Motivos das sanções"]
+              
+              TransacoesNegadas["TRANSAÇÕES NEGADAS<br>(fetch_denied_transactions em functions.py)"]
+              TransacoesNegadasDet["- Operações recusadas pelo sistema<br>- Motivos de recusa<br>- Padrões de tentativas<br>- Perfil das transações negadas"]
+              
+              TransacoesPrisao["TRANSAÇÕES EM PRESÍDIOS<br>(fetch_prison_transactions em functions.py)"]
+              TransacoesPrisaoDet["- Operações realizadas de áreas prisionais<br>- Frequência e valores<br>- Destinatários das operações<br>- Padrões temporais"]
+              
+              RelacionamentosEmpresariais["RELACIONAMENTOS EMPRESARIAIS<br>(fetch_business_data em functions.py)"]
+              RelacionamentosEmpresariaisDet["- Vínculos empresariais do cliente<br>- Participação societária<br>- Cargos e funções<br>- Histórico das empresas relacionadas"]
+              
+              %% CONEXÕES INICIAIS
+              EntradaDados --- AlertasTrad & AlertasIA
+              
+              AlertasTrad --> AlertasTradList
+              AlertasTradList --> AlertasCH & AlertasPIX & AlertasInternacionais & AlertasOutros
+              AlertasCH --> AlertasCHDet
+              AlertasPIX --> AlertasPIXDet
+              AlertasInternacionais --> AlertasInternacionaisDet
+              AlertasOutros --> AlertasOutrosDet
+              
+              AlertasIA --> AlertasIAList
+              
+              AlertasCHDet & AlertasPIXDet & AlertasInternacionaisDet & AlertasOutrosDet & AlertasIAList --> FiltragemExclusoes
+              
+              FiltragemExclusoes --> ExclusoesAuto
+              ExclusoesAuto --> ExclusoesAutoDet
+              
+              %% CONEXÕES ENRIQUECIMENTO
+              ExclusoesAutoDet --> EnriquecimentoDados
+              
+              EnriquecimentoDados --> PerfilMerchant & PerfilIndividual & DadosComplementares
+              
+              PerfilMerchant --> MerchantInfo & IssuingConcentration & TransactionConcentration & PIXConcentration & Devices & Contacts & Products & OffenseHistory
+              MerchantInfo --> MerchantInfoDet
+              IssuingConcentration --> IssuingConcentrationDet
+              TransactionConcentration --> TransactionConcentrationDet
+              PIXConcentration --> PIXConcentrationDet
+              Devices --> DevicesDet
+              Contacts --> ContactsDet
+              Products --> ProductsDet
+              OffenseHistory --> OffenseHistoryDet
+              
+              PerfilIndividual --> UserInfo & FinancialProfile & TransactionHistory & SuspiciousPatterns
+              UserInfo --> UserInfoDet
+              UserInfoDet --> VerificacaoEstrangeiros
+              VerificacaoEstrangeiros --> VerificacaoEstrangeirosDetail
+              FinancialProfile --> FinancialProfileDet
+              TransactionHistory --> TransactionHistoryDet
+              SuspiciousPatterns --> SuspiciousPatternsDet
+              
+              DadosComplementares --> DadosPEP & DadosJudiciais & DadosApostas & SancoesHistorico & TransacoesNegadas & TransacoesPrisao & RelacionamentosEmpresariais
+              DadosPEP --> DadosPEPDet
+              DadosJudiciais --> DadosJudiciaisDet
+              DadosApostas --> DadosApostasDet
+              SancoesHistorico --> SancoesHistoricoDet
+              TransacoesNegadas --> TransacoesNegadasDet
+              TransacoesPrisao --> TransacoesPrisaoDet
+              RelacionamentosEmpresariais --> RelacionamentosEmpresariaisDet
+              
+              %% PROCESSAMENTO
               ProcessamentoDados["⚙️ PROCESSAMENTO DE DADOS"]
-              FormatacaoDados["FORMATAÇÃO DOS DADOS (functions.py)<br>- Conversão de tipos de dados<br>- Formatação de datas (format_date_portuguese)<br>- Conversão de valores decimais (convert_decimals)<br>- Estruturação hierárquica de informações"]
-              GeracaoPrompt["GERAÇÃO DE PROMPT ESTRUTURADO (gpt_utils.py)<br>- Formatação dos dados para análise<br>- Estruturação segundo contexto regulatório<br>- Inclusão de informações históricas relevantes"]
               
-              %% Pipeline de IA
+              FormatacaoDados["FORMATAÇÃO DOS DADOS<br>(functions.py)"]
+              FormatacaoDadosDet["- Conversão de tipos de dados<br>- Formatação de datas (format_date_portuguese)<br>- Conversão de valores decimais (convert_decimals)<br>- Estruturação hierárquica de informações"]
+              
+              GeracaoPrompt["GERAÇÃO DE PROMPT ESTRUTURADO<br>(gpt_utils.py)"]
+              GeracaoPromptDet["- Formatação dos dados para análise<br>- Estruturação segundo contexto regulatório<br>- Inclusão de informações históricas relevantes"]
+              
+              %% Tratamento Específico por Tipo de Alerta
+              TratamentoEspecificoAlerta["TRATAMENTO PERSONALIZADO POR ALERTA<br>(generate_prompt em functions.py)"]
+              TratamentoEspecificoAlertaDetail["- Instruções específicas para bank_slips_alert<br>- Instruções específicas para international_cards_alert<br>- Instruções específicas para betting_houses_alert<br>- Instruções específicas para gafi_alert<br>- Instruções específicas para ch_alert [BR]<br>- Instruções específicas para pix_merchant_alert"]
+              
+              %% SISTEMA PROMPT
+              SystemPrompt["🧠 SYSTEM PROMPT<br>gpt_utils.py"]
+              
+              %% IDENTIDADE E FUNÇÃO
+              AnalystIdentity["👤 IDENTIDADE E FUNÇÃO"]
+              AnalystIdentityDetails["- Analista sênior certificado pela ACAMS<br>- Especialista em Prevenção à Lavagem de Dinheiro<br>- Função: Analisar anomalias e indícios de lavagem<br>- Responsável por tomar decisões sobre casos"]
+              
+              %% PARÂMETROS DE ANÁLISE  
+              AnalysisParams["🔍 PARÂMETROS DE ANÁLISE"]
+              AnalysisParamsDetails["- Análise de Cash In e Cash Out<br>- Verificação de repetições em titulares de cartão<br>- Análise de transações via PIX<br>- Verificação de TPV e concentração com portadores<br>- Identificação de operações via issuing<br>- Análise de relacionamentos empresariais"]
+              
+              %% INSTRUÇÕES DE PROCESSAMENTO
+              DataProcessing["📊 INSTRUÇÕES DE PROCESSAMENTO"]
+              DataProcessingDetails["- Evitar encaminhamento por suspeitas leves<br>- Analisar contexto geral de cada caso<br>- Tratar PIX Cash Out de forma diferente de saques<br>- Fornecer justificativas detalhadas<br>- Identificar conexões entre partes<br>- Considerar frequência e valores das transações"]
+              
+              %% CRITÉRIOS OBRIGATÓRIOS
+              MandatoryAnalysisCriteria["📋 CRITÉRIOS OBRIGATÓRIOS DE ANÁLISE"]
+              MandatoryAnalysisCriteriaDetails["Para TODOS os alertas devem ser incluídas:<br>- Perfil do Cliente<br>- Movimentações Financeiras<br>- Histórico de Offenses<br>- Relacionamentos Econômicos<br>- Padrões e Comportamentos<br>- Processos judiciais em andamento/concluídos"]
+              
+              %% CLASSIFICAÇÃO DE RISCO
+              RiskClassification["⚠️ CLASSIFICAÇÃO DE RISCO"]
+              RiskClassificationDetails["Escala de 1 a 10 onde:<br>- 1 a 5: Baixo risco (normalização do caso)<br>- 6: Médio risco (normalização com monitoramento)<br>- 7 a 8: Médio-Alto risco (validação adicional - BV)<br>- 9: Alto risco (validação adicional urgente - BV)<br>- 10: Risco extremo (descredenciamento e COAF)"]
+              
+              %% FRAMEWORK REGULATÓRIO
+              RegulatoryFramework["📜 FRAMEWORK REGULATÓRIO"]
+              RegulatoryFrameworkDetails["- Fundamentação em alíneas da Carta Circular 4001<br>- Aplicação criteriosa e conservadora<br>- Citação apenas com evidências concretas<br>- Evitar associações forçadas<br>- Explicação precisa de cada alínea aplicada"]
+              
+              %% CONEXÕES PROCESSAMENTO
+              MerchantInfoDet & IssuingConcentrationDet & TransactionConcentrationDet & PIXConcentrationDet & DevicesDet & ContactsDet & ProductsDet & OffenseHistoryDet & UserInfoDet & FinancialProfileDet & TransactionHistoryDet & SuspiciousPatternsDet & DadosPEPDet & DadosJudiciaisDet & DadosApostasDet & SancoesHistoricoDet & TransacoesNegadasDet & TransacoesPrisaoDet & RelacionamentosEmpresariaisDet --> ProcessamentoDados
+              
+              ProcessamentoDados --> FormatacaoDados & GeracaoPrompt
+              FormatacaoDados --> FormatacaoDadosDet
+              GeracaoPrompt --> GeracaoPromptDet
+              
+              GeracaoPromptDet --> TratamentoEspecificoAlerta --> TratamentoEspecificoAlertaDetail
+              
+              GeracaoPromptDet --> SystemPrompt
+              
+              SystemPrompt --> AnalystIdentity & AnalysisParams & DataProcessing & MandatoryAnalysisCriteria & RiskClassification & RegulatoryFramework
+              
+              AnalystIdentity --> AnalystIdentityDetails
+              AnalysisParams --> AnalysisParamsDetails
+              DataProcessing --> DataProcessingDetails
+              MandatoryAnalysisCriteria --> MandatoryAnalysisCriteriaDetails
+              RiskClassification --> RiskClassificationDetails
+              RegulatoryFramework --> RegulatoryFrameworkDetails
+              
+              %% PIPELINE DE IA
               PipelineIA["🧠 PIPELINE DE IA"]
               
-              AnalisePrincipal["1. ANÁLISE PRINCIPAL COM GPT-4o (gpt_utils.py)"]
-              AnalisePrincipalDetalhes["FUNCTION: get_chatgpt_response()<br>PARAMETERS:<br>- model: gpt-4o-2024-11-20<br>- temperature: 0.0<br>- messages:<br>* system: SYSTEM_PROMPT<br>* user: dados estruturados do caso<br><br>ANÁLISE PRODUZIDA:<br>- Perfil do Cliente<br>- Movimentações Financeiras<br>- Histórico de Offenses<br>- Relacionamentos Econômicos<br>- Padrões e Comportamentos<br>- Processos judiciais<br>- Possível pontuação de risco (1-10)"]
+              AnalisePrincipal["1. ANÁLISE PRINCIPAL COM GPT-4o<br>(gpt_utils.py)"]
+              AnalisePrincipalDet["FUNCTION: get_chatgpt_response()<br>PARAMETERS:<br>- model: gpt-4o-2024-11-20<br>- temperature: 0.0<br>- messages:<br>* system: SYSTEM_PROMPT<br>* user: dados estruturados do caso<br><br>ANÁLISE PRODUZIDA:<br>- Perfil do Cliente<br>- Movimentações Financeiras<br>- Histórico de Offenses<br>- Relacionamentos Econômicos<br>- Padrões e Comportamentos<br>- Processos judiciais<br>- Possível pontuação de risco (1-10)"]
               
-              VerificacaoScore["2. VERIFICAÇÃO DE SCORE (gpt_utils.py)"]
-              VerificacaoScoreDetalhes["FUNCTION: get_analysis_and_decision()<br>- Verifica se 'Risco de Lavagem de Dinheiro:' está presente<br>- Se não estiver:<br>* Cria score_prompt solicitando classificação<br>* Envia para o3-mini-2025-01-31<br>* Adiciona score à análise original"]
+              %% Fallback para Contextos Longos
+              FallbackContextosLongos["FALLBACK PARA CONTEXTOS LONGOS<br>(get_chatgpt_response em gpt_utils.py)"]
+              FallbackContextosLongosDetail["- Detecção de erro 'context_length_exceeded'<br>- Redirecionamento para análise humana<br>- Mensagem específica: 'Não consigo tankar este caso'<br>- Tratamento de casos complexos"]
               
-              DecisaoFinal["3. DECISÃO FINAL COM O3-mini (gpt_utils.py)"]
-              DecisaoFinalDetalhes["FUNCTION: get_analysis_and_decision()<br>PARAMETERS:<br>- model: o3-mini-2025-01-31<br>- reasoning_effort: high<br>- messages:<br>* system: SYSTEM_PROMPT<br>* user: decision_prompt com análise completa do GPT-4o<br><br>RESULTADO:<br>- Decisão final em exatamente duas linhas<br>- Inclusão do score de risco<br>- Menção às principais alíneas da Carta Circular 4001<br>- Solicitação de documentos quando necessário"]
+              PipelineIA --> AnalisePrincipal
+              AnalisePrincipal --> AnalisePrincipalDet
+              AnalisePrincipalDet --> FallbackContextosLongos
+              FallbackContextosLongos --> FallbackContextosLongosDetail
+              FallbackContextosLongosDetail --> VerificacaoScore
               
-              ComposicaoResultado["4. COMPOSIÇÃO DO RESULTADO (gpt_utils.py)"]
-              ComposicaoResultadoDetalhes["- Junção da análise detalhada do GPT-4o<br>- Inclusão do score (original ou gerado pelo o3-mini)<br>- Adição da decisão concisa do o3-mini<br>- Resultado completo em formato de texto"]
+              VerificacaoScore["2. VERIFICAÇÃO DE SCORE<br>(gpt_utils.py)"]
+              VerificacaoScoreDet["FUNCTION: get_analysis_and_decision()<br>- Verifica se 'Risco de Lavagem de Dinheiro:' está presente<br>- Se não estiver:<br>* Cria score_prompt solicitando classificação<br>* Envia para o3-mini-2025-01-31<br>* Adiciona score à análise original"]
               
-              %% Resultados
+              DecisaoFinal["3. DECISÃO FINAL COM O3-mini<br>(gpt_utils.py)"]
+              DecisaoFinalDet["FUNCTION: get_analysis_and_decision()<br>PARAMETERS:<br>- model: o3-mini-2025-01-31<br>- reasoning_effort: high<br>- messages:<br>* system: SYSTEM_PROMPT<br>* user: decision_prompt com análise completa do GPT-4o<br><br>RESULTADO:<br>- Decisão final em exatamente duas linhas<br>- Inclusão do score de risco<br>- Menção às principais alíneas da Carta Circular 4001<br>- Solicitação de documentos quando necessário"]
+              
+              ComposicaoResultado["4. COMPOSIÇÃO DO RESULTADO<br>(gpt_utils.py)"]
+              ComposicaoResultadoDet["- Junção da análise detalhada do GPT-4o<br>- Inclusão do score (original ou gerado pelo o3-mini)<br>- Adição da decisão concisa do o3-mini<br>- Resultado completo em formato de texto"]
+              
+              %% Integração com API de Risk
+              IntegracaoAPIRisk["INTEGRAÇÃO COM API DE RISK<br>(send_payload em app.py)"]
+              IntegracaoAPIRiskDetail["- Envio via API REST para infinitepay-risk-api<br>- Endpoint: /monitoring/offense_analysis<br>- Autenticação via key_master<br>- Payload estruturado com análise e resultados"]
+              
+              %% RESULTADOS
               ResultadosAnalise["📊 RESULTADOS DA ANÁLISE"]
               
+              %% Tracking de Usuários Sinalizados
+              TrackingUsuarios["TRACKING DE USUÁRIOS SINALIZADOS<br>(run_bot em app.py)"]
+              TrackingUsuariosDetail["- Monitoramento de status de análise<br>- Rastreamento de usuários em processo<br>- Registro de timestamp de análise: datetime.now()<br>- Medição de eficiência do processo<br>- Progress bar de análise"]
+              
               ClassificacaoRisco["CLASSIFICAÇÃO DE RISCO"]
-              ClassificacaoRiscoDetalhes["- Score 1-4: Baixo risco (normalização do caso)<br>- Score 5-6: Médio risco (normalização com monitoramento)<br>- Score 7-9: Alto risco (validação adicional - BV)<br>- Score 10: Risco extremo (descredenciamento e COAF)"]
+              ClassificacaoRiscoDet["- Score 1-4: Baixo risco (normalização do caso)<br>- Score 5-6: Médio risco (normalização com monitoramento)<br>- Score 7-9: Alto risco (validação adicional - BV)<br>- Score 10: Risco extremo (descredenciamento e COAF)"]
               
               DecisaoAcionavel["DECISÃO ACIONÁVEL"]
-              DecisaoAcionavelDetalhes["- Normalização do caso<br>OU<br>- Solicitação de Business Validation (BV)<br>* Comprovantes de endereço<br>* Comprovantes de renda<br>* Documentação adicional"]
+              DecisaoAcionavelDet["- Normalização do caso<br>OU<br>- Solicitação de Business Validation (BV)<br>* Comprovantes de endereço<br>* Comprovantes de renda<br>* Documentação adicional<br>OU<br>- Descredenciamento<br>* Bloqueio imediato do cliente<br>* Fechamento da conta<br>* Reporte automático ao COAF"]
               
               FundamentacaoRegulatoria["FUNDAMENTAÇÃO REGULATÓRIA"]
-              FundamentacaoRegulatoriaDetalhes["- Alíneas específicas da Carta Circular 4001<br>- Justificativa para cada alínea identificada<br>- Correlação entre dados observados e suspeitas"]
+              FundamentacaoRegulatoriaDet["- Alíneas específicas da Carta Circular 4001<br>- Justificativa para cada alínea identificada<br>- Correlação entre dados observados e suspeitas"]
               
-              %% Descrição detalhada dos dados
-              subgraph DetalhamentoAlertas["DESCRIÇÃO DETALHADA DOS DADOS ANALISADOS"]
-                  direction TB
-                  
-                  AlertasSinalizacoes["1. ALERTAS E SINALIZAÇÕES"]
-                  AlertasSinalizacoesDesc["<b>Alertas Tradicionais - Padrões específicos:</b><br>- CH Alert: Transações de cash in/out em montantes suspeitos<br>- Pep_Pix Alert: Operações PIX envolvendo PEPs<br>- GAFI Alert: Transações com países na lista GAFI/FATF<br>- Merchant_Pix Alert: Padrões atípicos em PIX de comerciantes<br>- International_Cards_Alert: Uso de cartões em transações internacionais<br>- Bank_Slips_Alert: Emissão/pagamento de boletos suspeitos<br><br><b>Alertas de IA:</b><br>- Score de risco gerado por algoritmo de ML<br>- Transações atípicas não detectadas por regras tradicionais"]
-                  
-                  DadosPerfil["2. DADOS DE PERFIL E TRANSAÇÕES"]
-                  DadosPerfilDesc["<b>Dados de Merchant:</b><br>- Volume de transações (diário, semanal, mensal)<br>- Padrões de sazonalidade e horários<br>- Concentração de transações por cardholders<br>- Ratio de cash in vs. cash out<br><br><b>Dados de Pessoa Física:</b><br>- Perfil socioeconômico declarado<br>- Histórico de transações e contrapartes<br>- Renda vs. volume movimentado<br>- Padrões de consumo e transferências"]
-                  
-                  RelacionamentosConexoes["3. RELACIONAMENTOS E CONEXÕES"]
-                  RelacionamentosConexoesDesc["<b>Dispositivos e Acessos:</b><br>- IPs utilizados e geolocalização<br>- Padrões de acesso (horários, frequência)<br>- Dispositivos compartilhados com outros usuários<br><br><b>Contatos e Transações Recorrentes:</b><br>- Frequência de interações com contrapartes<br>- Volume financeiro por contraparte<br>- Perfil das contrapartes (PEP, alto risco, etc.)"]
-                  
-                  AvaliacaoRiscos["4. AVALIAÇÃO DE RISCOS PELO GPT-4o"]
-                  AvaliacaoRiscosDesc["O modelo analisa especificamente:<br>- <b>Compatibilidade:</b> Entre movimentação e perfil declarado<br>- <b>Fragmentação:</b> Padrões de divisão de transações<br>- <b>Operações Estruturadas:</b> Sequências que indicam ocultação<br>- <b>Contrapartes de Risco:</b> Relacionamentos com entidades/pessoas de risco<br>- <b>Horários Atípicos:</b> Operações em horários não usuais<br>- <b>Circularidade:</b> Movimentações que retornam à origem indiretamente"]
-                  
-                  DecisaoO3mini["5. DECISÃO FINAL PELO O3-mini"]
-                  DecisaoO3miniDesc["Com base na análise do GPT-4o, o modelo sintetiza:<br>- <b>Score Numérico:</b> Classificação na escala 1-10<br>- <b>Alíneas Aplicáveis:</b> Referências à Carta Circular 4001<br>- <b>Ação Recomendada:</b> Normalização ou solicitação de BV<br>- <b>Documentação Necessária:</b> Documentos a serem solicitados"]
-              end
+              %% AÇÕES REGULATÓRIAS ESPECIAIS
+              AcoesRegulatorias["⚠️ AÇÕES REGULATÓRIAS ESPECIAIS"]
               
-              %% Conexões do fluxo principal
-              FonteDados --- AlertasTrad & AlertasIA
-              AlertasTrad --- AlertasTradList
-              AlertasIA --- AlertasIAList
+              ReporteCOAF["REPORTE AO COAF"]
+              ReporteCOAFDet["- Comunicação de Operação Suspeita (COS)<br>- Inclusão de toda documentação<br>- Indicação das alíneas da CC 4001<br>- Prazo de 24h para operações urgentes"]
               
-              AlertasTradList & AlertasIAList --> FiltragemExclusoes
-              FiltragemExclusoes --- ExclusoesAuto
+              Descredenciamento["DESCREDENCIAMENTO"]
+              DescredenciamentoDet["- Bloqueio preventivo da conta<br>- Notificação ao cliente<br>- Encerramento da relação comercial<br>- Monitoramento adicional de contas relacionadas"]
               
-              ExclusoesAuto --> EnriquecimentoDados
+              MonitoramentoEspecial["MONITORAMENTO ESPECIAL"]
+              MonitoramentoEspecialDet["- Inclusão em lista de monitoramento<br>- Verificação periódica de transações<br>- Validações adicionais para operações sensíveis<br>- Revisão a cada 90 dias"]
               
-              EnriquecimentoDados --- PerfilMerchant & PerfilIndividual & DadosPEP & DadosJudiciais & DadosApostas
-              PerfilMerchant --- MerchantData
-              PerfilIndividual --- IndividualData
-              DadosPEP --- DadosPEPList
-              DadosJudiciais --- DadosJudiciaisList
-              DadosApostas --- DadosApostasList
+              %% CONEXÕES PIPELINE E RESULTADOS
+              RegulatoryFrameworkDetails & AnalystIdentityDetails & AnalysisParamsDetails & DataProcessingDetails & MandatoryAnalysisCriteriaDetails & RiskClassificationDetails --> PipelineIA
               
-              MerchantData & IndividualData & DadosPEPList & DadosJudiciaisList & DadosApostasList --> ProcessamentoDados
+              VerificacaoScore --> VerificacaoScoreDet
+              VerificacaoScoreDet --> DecisaoFinal --> DecisaoFinalDet
+              DecisaoFinalDet --> ComposicaoResultado --> ComposicaoResultadoDet
               
-              ProcessamentoDados --- FormatacaoDados & GeracaoPrompt
+              ComposicaoResultadoDet --> IntegracaoAPIRisk --> IntegracaoAPIRiskDetail
               
-              FormatacaoDados & GeracaoPrompt --> PipelineIA
+              ComposicaoResultadoDet --> ResultadosAnalise
               
-              PipelineIA --- AnalisePrincipal & VerificacaoScore & DecisaoFinal & ComposicaoResultado
-              AnalisePrincipal --- AnalisePrincipalDetalhes
-              VerificacaoScore --- VerificacaoScoreDetalhes
-              DecisaoFinal --- DecisaoFinalDetalhes
-              ComposicaoResultado --- ComposicaoResultadoDetalhes
+              ResultadosAnalise --> ClassificacaoRisco & DecisaoAcionavel & FundamentacaoRegulatoria & TrackingUsuarios
+              TrackingUsuarios --> TrackingUsuariosDetail
+              TrackingUsuariosDetail --> TratamentoEspecificoAlerta
               
-              ComposicaoResultadoDetalhes --> ResultadosAnalise
+              ClassificacaoRisco --> ClassificacaoRiscoDet
+              DecisaoAcionavel --> DecisaoAcionavelDet
+              FundamentacaoRegulatoria --> FundamentacaoRegulatoriaDet
               
-              ResultadosAnalise --- ClassificacaoRisco & DecisaoAcionavel & FundamentacaoRegulatoria
-              ClassificacaoRisco --- ClassificacaoRiscoDetalhes
-              DecisaoAcionavel --- DecisaoAcionavelDetalhes
-              FundamentacaoRegulatoria --- FundamentacaoRegulatoriaDetalhes
+              ClassificacaoRiscoDet & DecisaoAcionavelDet --> AcoesRegulatorias
+              AcoesRegulatorias --> ReporteCOAF & Descredenciamento & MonitoramentoEspecial
+              ReporteCOAF --> ReporteCOAFDet
+              Descredenciamento --> DescredenciamentoDet
+              MonitoramentoEspecial --> MonitoramentoEspecialDet
               
-              %% Conexões adicionais para o detalhamento
-              ResultadosAnalise -.-> DetalhamentoAlertas
+              %% Aplicação de estilos adicionais
+              class PipelineIA,AnalisePrincipal,AnalisePrincipalDet,VerificacaoScore,VerificacaoScoreDet,DecisaoFinal,DecisaoFinalDet,ComposicaoResultado,ComposicaoResultadoDet analysis
               
-              %% Estilo das caixas
-              class FonteDados,AlertasTrad,AlertasIA,AlertasTradList,AlertasIAList source
-              class FiltragemExclusoes,ExclusoesAuto filter
-              class EnriquecimentoDados,PerfilMerchant,MerchantData,PerfilIndividual,IndividualData,DadosPEP,DadosPEPList,DadosJudiciais,DadosJudiciaisList,DadosApostas,DadosApostasList enrichment
-              class ProcessamentoDados,FormatacaoDados,GeracaoPrompt process
-              class PipelineIA,AnalisePrincipal,AnalisePrincipalDetalhes,VerificacaoScore,VerificacaoScoreDetalhes,DecisaoFinal,DecisaoFinalDetalhes,ComposicaoResultado,ComposicaoResultadoDetalhes analysis
-              class ResultadosAnalise,ClassificacaoRisco,ClassificacaoRiscoDetalhes,DecisaoAcionavel,DecisaoAcionavelDetalhes,FundamentacaoRegulatoria,FundamentacaoRegulatoriaDetalhes pipeline
-              class DetalhamentoAlertas,AlertasSinalizacoes,AlertasSinalizacoesDesc,DadosPerfil,DadosPerfilDesc,RelacionamentosConexoes,RelacionamentosConexoesDesc,AvaliacaoRiscos,AvaliacaoRiscosDesc,DecisaoO3mini,DecisaoO3miniDesc details
+              class ResultadosAnalise,ClassificacaoRisco,ClassificacaoRiscoDet,DecisaoAcionavel,DecisaoAcionavelDet,FundamentacaoRegulatoria,FundamentacaoRegulatoriaDet pipeline
+              
+              class AcoesRegulatorias,ReporteCOAF,ReporteCOAFDet,Descredenciamento,DescredenciamentoDet,MonitoramentoEspecial,MonitoramentoEspecialDet action
+              
+              class TratamentoEspecificoAlerta,TratamentoEspecificoAlertaDetail process
+              class IntegracaoAPIRisk,IntegracaoAPIRiskDetail process
+              
+              %% Aplicação de estilos
+              class EnriquecimentoDados,PerfilMerchant,MerchantInfo,MerchantInfoDet,IssuingConcentration,IssuingConcentrationDet,TransactionConcentration,TransactionConcentrationDet,PIXConcentration,PIXConcentrationDet,Devices,DevicesDet,Contacts,ContactsDet,Products,ProductsDet,OffenseHistory,OffenseHistoryDet,PerfilIndividual,UserInfo,UserInfoDet,FinancialProfile,FinancialProfileDet,TransactionHistory,TransactionHistoryDet,SuspiciousPatterns,SuspiciousPatternsDet,DadosComplementares,DadosPEP,DadosPEPDet,DadosJudiciais,DadosJudiciaisDet,DadosApostas,DadosApostasDet,SancoesHistorico,SancoesHistoricoDet,TransacoesNegadas,TransacoesNegadasDet,TransacoesPrisao,TransacoesPrisaoDet,RelacionamentosEmpresariais,RelacionamentosEmpresariaisDet,HorariosAtipicos,HorariosAtipicosDetail,BINsGovernamentais,BINsGovernamentaisDetail,VerificacaoEstrangeiros,VerificacaoEstrangeirosDetail enrichment
+              
+              class TrackingUsuarios,TrackingUsuariosDetail pipeline
+              class FallbackContextosLongos,FallbackContextosLongosDetail analysis
+              
+              %% Aplicação de estilos iniciais
+              class EntradaDados,AlertasTrad,AlertasIA,AlertasTradList,AlertasIAList,AlertasCH,AlertasCHDet,AlertasPIX,AlertasPIXDet,AlertasInternacionais,AlertasInternacionaisDet,AlertasOutros,AlertasOutrosDet source
+              
+              class FiltragemExclusoes,ExclusoesAuto,ExclusoesAutoDet filter
+              
+              class ProcessamentoDados,FormatacaoDados,FormatacaoDadosDet,GeracaoPrompt,GeracaoPromptDet process
+              class SystemPrompt,AnalystIdentity,AnalystIdentityDetails,AnalysisParams,AnalysisParamsDetails identity
+              class MandatoryAnalysisCriteria,MandatoryAnalysisCriteriaDetails,DataProcessing,DataProcessingDetails analysis
+              class RiskClassification,RiskClassificationDetails criteria
+              class RegulatoryFramework,RegulatoryFrameworkDetails regulatory
+              
+              %% Conexões específicas entre módulos de fluxo
+              HorariosAtipicosDetail --> ProcessamentoDados
+              BINsGovernamentaisDetail --> ProcessamentoDados
+              TratamentoEspecificoAlertaDetail --> IntegracaoAPIRisk
         </div>
     </div>
     
@@ -321,6 +632,48 @@
         <button onclick="window.print()"><i class="fas fa-print"></i> Exportar PDF</button>
         <button onclick="zoomIn()"><i class="fas fa-search-plus"></i> Ampliar</button>
         <button onclick="zoomOut()"><i class="fas fa-search-minus"></i> Reduzir</button>
+        <button onclick="openReportModal()"><i class="fas fa-flag"></i> Reportar ao COAF</button>
+        <button class="danger" onclick="openDisaccreditModal()"><i class="fas fa-ban"></i> Descredenciar</button>
+    </div>
+    
+    <!-- Modal para Descredenciamento -->
+    <div id="disaccreditModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModals()">&times;</span>
+            <h2><i class="fas fa-exclamation-triangle"></i> Confirmar Descredenciamento</h2>
+            <p>Você está prestes a iniciar o processo de <strong>descredenciamento</strong> deste cliente. Esta ação é irreversível e deve ser tomada apenas em casos de alto risco confirmado.</p>
+            <p>O descredenciamento irá:</p>
+            <ul style="margin-left: 20px; margin-bottom: 20px;">
+                <li>Bloquear imediatamente todas as operações do cliente</li>
+                <li>Iniciar o processo de encerramento da relação comercial</li>
+                <li>Gerar um relatório detalhado para o time de compliance</li>
+                <li>Notificar automaticamente os setores responsáveis</li>
+            </ul>
+            <div class="modal-buttons">
+                <button class="cancel" onclick="closeModals()">Cancelar</button>
+                <button class="confirm" onclick="confirmDisaccredit()">Confirmar Descredenciamento</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para Reporte ao COAF -->
+    <div id="reportModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModals()">&times;</span>
+            <h2><i class="fas fa-file-alt"></i> Reporte ao COAF</h2>
+            <p>Você está prestes a gerar um <strong>relatório de atividade suspeita</strong> para envio ao COAF (Conselho de Controle de Atividades Financeiras).</p>
+            <p>Este relatório incluirá:</p>
+            <ul style="margin-left: 20px; margin-bottom: 20px;">
+                <li>Todos os detalhes da análise atual</li>
+                <li>Histórico completo de transações do cliente</li>
+                <li>Padrões identificados de comportamento suspeito</li>
+                <li>Fundamentação regulatória (Carta Circular 4001)</li>
+            </ul>
+            <div class="modal-buttons">
+                <button class="cancel" onclick="closeModals()">Cancelar</button>
+                <button class="confirm" onclick="confirmReport()">Gerar Relatório COAF</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -353,6 +706,37 @@
                 scale -= 0.1;
                 mermaidDiv.style.transform = `scale(${scale})`;
                 mermaidDiv.style.transformOrigin = 'center center';
+            }
+        }
+        
+        // Funções para gerenciar os modais
+        function openDisaccreditModal() {
+            document.getElementById('disaccreditModal').style.display = 'flex';
+        }
+        
+        function openReportModal() {
+            document.getElementById('reportModal').style.display = 'flex';
+        }
+        
+        function closeModals() {
+            document.getElementById('disaccreditModal').style.display = 'none';
+            document.getElementById('reportModal').style.display = 'none';
+        }
+        
+        function confirmDisaccredit() {
+            alert('Processo de descredenciamento iniciado. Um relatório será enviado ao time de compliance.');
+            closeModals();
+        }
+        
+        function confirmReport() {
+            alert('Relatório para o COAF gerado com sucesso. A equipe de compliance receberá uma cópia.');
+            closeModals();
+        }
+        
+        // Fechar modais ao clicar fora deles
+        window.onclick = function(event) {
+            if (event.target.className === 'modal') {
+                closeModals();
             }
         }
     </script>
