@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -425,11 +424,13 @@
               
               EnriquecimentoDados --> PerfilMerchant & PerfilIndividual & DadosComplementares
               
-              PerfilMerchant --> MerchantInfo & IssuingConcentration & TransactionConcentration & PIXConcentration & Devices & Contacts & Products & OffenseHistory
+              PerfilMerchant --> MerchantInfo & IssuingConcentration & TransactionConcentration & PIXConcentration & HorariosAtipicos & BINsGovernamentais & Devices & Contacts & Products & OffenseHistory
               MerchantInfo --> MerchantInfoDet
               IssuingConcentration --> IssuingConcentrationDet
               TransactionConcentration --> TransactionConcentrationDet
               PIXConcentration --> PIXConcentrationDet
+              HorariosAtipicos --> HorariosAtipicosDetail
+              BINsGovernamentais --> BINsGovernamentaisDetail
               Devices --> DevicesDet
               Contacts --> ContactsDet
               Products --> ProductsDet
