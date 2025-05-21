@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -633,51 +634,18 @@
         <button onclick="window.print()"><i class="fas fa-print"></i> Exportar PDF</button>
         <button onclick="zoomIn()"><i class="fas fa-search-plus"></i> Ampliar</button>
         <button onclick="zoomOut()"><i class="fas fa-search-minus"></i> Reduzir</button>
-        <button onclick="openReportModal()"><i class="fas fa-flag"></i> Reportar ao COAF</button>
-        <button class="danger" onclick="openDisaccreditModal()"><i class="fas fa-ban"></i> Descredenciar</button>
-    </div>
-    
-    <!-- Modal para Descredenciamento -->
-    <div id="disaccreditModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModals()">&times;</span>
-            <h2><i class="fas fa-exclamation-triangle"></i> Confirmar Descredenciamento</h2>
-            <p>Você está prestes a iniciar o processo de <strong>descredenciamento</strong> deste cliente. Esta ação é irreversível e deve ser tomada apenas em casos de alto risco confirmado.</p>
-            <p>O descredenciamento irá:</p>
-            <ul style="margin-left: 20px; margin-bottom: 20px;">
-                <li>Bloquear imediatamente todas as operações do cliente</li>
-                <li>Iniciar o processo de encerramento da relação comercial</li>
-                <li>Gerar um relatório detalhado para o time de compliance</li>
-                <li>Notificar automaticamente os setores responsáveis</li>
-            </ul>
-            <div class="modal-buttons">
-                <button class="cancel" onclick="closeModals()">Cancelar</button>
-                <button class="confirm" onclick="confirmDisaccredit()">Confirmar Descredenciamento</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Modal para Reporte ao COAF -->
-    <div id="reportModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModals()">&times;</span>
-            <h2><i class="fas fa-file-alt"></i> Reporte ao COAF</h2>
-            <p>Você está prestes a gerar um <strong>relatório de atividade suspeita</strong> para envio ao COAF (Conselho de Controle de Atividades Financeiras).</p>
-            <p>Este relatório incluirá:</p>
-            <ul style="margin-left: 20px; margin-bottom: 20px;">
-                <li>Todos os detalhes da análise atual</li>
-                <li>Histórico completo de transações do cliente</li>
-                <li>Padrões identificados de comportamento suspeito</li>
-                <li>Fundamentação regulatória (Carta Circular 4001)</li>
-            </ul>
-            <div class="modal-buttons">
-                <button class="cancel" onclick="closeModals()">Cancelar</button>
-                <button class="confirm" onclick="confirmReport()">Gerar Relatório COAF</button>
-            </div>
-        </div>
     </div>
 
     <script>
+        // Configurar o Mermaid e inicializar as variáveis globais
+        let scale = 1.0; // Escala inicial
+        let translateX = 0;
+        let translateY = 0;
+        let isDragging = false;
+        let startX, startY;
+        const container = document.querySelector('.container');
+        const mermaidDiv = document.querySelector('.mermaid');
+        
         mermaid.initialize({
             startOnLoad: true,
             securityLevel: 'loose',
@@ -693,53 +661,121 @@
             }
         });
         
-        let scale = 1;
-        const mermaidDiv = document.querySelector('.mermaid');
+        function fitDiagramToView() {
+            // Ajusta o diagrama para caber na visualização
+            setTimeout(function() {
+                const svgElement = container.querySelector('svg');
+                if (svgElement) {
+                    try {
+                        // Obter dimensões
+                        const containerWidth = container.clientWidth;
+                        const containerHeight = container.clientHeight;
+                        const svgBBox = svgElement.getBBox();
+                        const svgWidth = svgBBox.width;
+                        const svgHeight = svgBBox.height;
+                        
+                        // Calcular escala com margem de 5%
+                        const margin = 0.05;
+                        const horizontalScale = containerWidth / (svgWidth * (1 + 2 * margin));
+                        const verticalScale = containerHeight / (svgHeight * (1 + 2 * margin));
+                        
+                        // Usar a menor escala para garantir visibilidade completa
+                        scale = Math.min(horizontalScale, verticalScale);
+                        scale = Math.max(scale, 0.5); // Limitar a escala mínima
+                        
+                        // Centralizar
+                        translateX = (containerWidth - svgWidth * scale) / 2;
+                        translateY = (containerHeight - svgHeight * scale) / 2;
+                        
+                        applyZoom();
+                    } catch (e) {
+                        console.error('Erro ao ajustar diagrama:', e);
+                    }
+                }
+            }, 1000);
+        }
         
         function zoomIn() {
             scale += 0.1;
-            mermaidDiv.style.transform = `scale(${scale})`;
-            mermaidDiv.style.transformOrigin = 'center center';
+            applyZoom();
         }
         
         function zoomOut() {
             if (scale > 0.5) {
                 scale -= 0.1;
-                mermaidDiv.style.transform = `scale(${scale})`;
-                mermaidDiv.style.transformOrigin = 'center center';
+                applyZoom();
             }
         }
         
-        // Funções para gerenciar os modais
-        function openDisaccreditModal() {
-            document.getElementById('disaccreditModal').style.display = 'flex';
+        function applyZoom() {
+            mermaidDiv.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+            mermaidDiv.style.transformOrigin = 'center center';
         }
         
-        function openReportModal() {
-            document.getElementById('reportModal').style.display = 'flex';
-        }
-        
-        function closeModals() {
-            document.getElementById('disaccreditModal').style.display = 'none';
-            document.getElementById('reportModal').style.display = 'none';
-        }
-        
-        function confirmDisaccredit() {
-            alert('Processo de descredenciamento iniciado. Um relatório será enviado ao time de compliance.');
-            closeModals();
-        }
-        
-        function confirmReport() {
-            alert('Relatório para o COAF gerado com sucesso. A equipe de compliance receberá uma cópia.');
-            closeModals();
-        }
-        
-        // Fechar modais ao clicar fora deles
-        window.onclick = function(event) {
-            if (event.target.className === 'modal') {
-                closeModals();
+        // Mouse wheel zoom
+        container.addEventListener('wheel', function(event) {
+            event.preventDefault();
+            
+            // Obter a posição do mouse relativa ao container
+            const rect = container.getBoundingClientRect();
+            const mouseX = event.clientX - rect.left;
+            const mouseY = event.clientY - rect.top;
+            
+            // Posição do mouse em relação ao diagrama antes do zoom
+            const mouseXInDiagram = (mouseX - translateX) / scale;
+            const mouseYInDiagram = (mouseY - translateY) / scale;
+            
+            // Ajustar escala
+            const oldScale = scale;
+            if (event.deltaY < 0) {
+                // Zoom in
+                scale = Math.min(scale + 0.1, 5.0);
+            } else {
+                // Zoom out
+                scale = Math.max(scale - 0.1, 0.5);
             }
-        }
+            
+            // Ajustar a translação para manter o ponto sob o mouse fixo
+            translateX = mouseX - mouseXInDiagram * scale;
+            translateY = mouseY - mouseYInDiagram * scale;
+            
+            applyZoom();
+        }, { passive: false });
+        
+        // Drag and drop
+        container.addEventListener('mousedown', function(event) {
+            isDragging = true;
+            startX = event.clientX - translateX;
+            startY = event.clientY - translateY;
+            container.style.cursor = 'grabbing';
+        });
+        
+        document.addEventListener('mousemove', function(event) {
+            if (!isDragging) return;
+            
+            translateX = event.clientX - startX;
+            translateY = event.clientY - startY;
+            applyZoom();
+        });
+        
+        document.addEventListener('mouseup', function() {
+            isDragging = false;
+            container.style.cursor = 'grab';
+        });
+        
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cursor estilo "grab" para indicar que é possível arrastar
+            container.style.cursor = 'grab';
+            
+            // Ajustar o diagrama automaticamente na primeira carga
+            fitDiagramToView();
+        });
+        
+        // Recalcular ajuste em redimensionamento de janela
+        window.addEventListener('resize', function() {
+            fitDiagramToView();
+        });
     </script>
 </body>
 </html> 
